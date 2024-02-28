@@ -32,35 +32,85 @@ namespace WebApiwithEf.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Person>>> GetPersons()
         {
-            return await _context.Persons.ToListAsync();
+            var result = await _context.Persons.Select(x => new {
+            id = x.Id,
+            name = x.Name,
+            email = x.Email,
+            balance = x.Account.Balance == null ? 0 : x.Account.Balance
+            
+            }).ToListAsync();
+
+            if(result == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(result);
+            }
+            //return await _context.Persons.ToListAsync();
         }
+
+
 
         // GET: api/People/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Person>> GetPerson(int id)
         {
+            // 그냥 단순하게 했을 때
             //var person = await _context.Persons.FindAsync(id);
 
             //if (person == null)
             //{
             //    return NotFound();
             //}
+            // return person;
 
-            var linqPerson = from element in _context.Persons
-                             where element.Id == id
-                             select element;
+            // LINQ를 사용했을 때
+            //var linqPerson = from element in _context.Persons
+            //                 where element.Id == id
+            //                 select element;
 
-            var person = await linqPerson.ToListAsync();
+            //var person = await linqPerson.ToListAsync();
 
-            if(person.Count == 0)
+            //if(person.Count == 0)
+            //{
+            //    return NotFound();
+            //}
+            //else
+            //{
+            //    return Ok(person);
+            //}
+
+            //// 람다를 사용했을 때  -- 실패
+            //var person = await _context.Persons.Where(x => x.Id == id)
+            //    .Include(x => x.Account).ToListAsync();
+
+            //if(person == null)
+            //{
+            //    return NotFound();
+            //}
+            //else
+            //{
+            //    return Ok(person);
+            //}
+
+            // 이걸 쓰자. 
+            var person = await _context.Persons
+                .Where(x => x.Id == id).Select(x => new { 
+                    Id = x.Id,
+                    Name = x.Name,
+                    Email = x.Email,
+                    Account = x.Account.Id,
+                    Balance = x.Account.Balance
+                }).FirstOrDefaultAsync();
+
+            if(person == null)
             {
                 return NotFound();
             }
-            else
-            {
-                return Ok(person);
-            }
 
+            return Ok(person);
         }
 
         // PUT: api/People/5

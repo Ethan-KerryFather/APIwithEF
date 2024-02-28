@@ -10,6 +10,11 @@ using WebApiwithEf.Model;
 
 namespace WebApiwithEf.Controllers
 {
+    public class PostAccountDTO
+    {
+        public int Balance {  get; set; }
+        public int UserId { get; set; }
+    }
     [Route("api/[controller]")]
     [ApiController]
     public class AccountsController : ControllerBase
@@ -76,8 +81,14 @@ namespace WebApiwithEf.Controllers
         // POST: api/Accounts
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Account>> PostAccount(Account account)
+        public async Task<ActionResult<Account>> PostAccount([FromBody] PostAccountDTO accountData)
         {
+            var account = new Account()
+            {
+                Balance = accountData.Balance,
+                UserId = accountData.UserId,
+            };
+
             _context.Accounts.Add(account);
             await _context.SaveChangesAsync();
 
