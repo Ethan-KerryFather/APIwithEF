@@ -10,6 +10,13 @@ using WebApiwithEf.Model;
 
 namespace WebApiwithEf.Controllers
 {
+
+    public class PostPersonDTO
+    {
+       
+        public string Name { get; set; }
+        public string Email { get; set; }
+    }
     [Route("api/[controller]")]
     [ApiController]
     public class PeopleController : ControllerBase
@@ -76,8 +83,16 @@ namespace WebApiwithEf.Controllers
         // POST: api/People
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Person>> PostPerson(Person person)
+        public async Task<ActionResult<Person>> PostPerson([FromBody] PostPersonDTO postPersonDTO)
         {
+            // 사용자 정의형 
+            var person = new Person
+            {
+                Name = postPersonDTO.Name,
+                Email = postPersonDTO.Email,
+
+            };
+
             _context.Persons.Add(person);
             await _context.SaveChangesAsync();
 
