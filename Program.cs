@@ -1,4 +1,7 @@
 
+using Microsoft.EntityFrameworkCore;
+using WebApiwithEf.Context;
+
 namespace WebApiwithEf
 {
     public class Program
@@ -13,6 +16,10 @@ namespace WebApiwithEf
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            // db Ãß°¡
+            builder.Services.AddDbContext<BankContext>(options =>
+                options.UseSqlServer("Server=D662-ETHANLIM;Database=test05;Trusted_Connection=True;TrustServerCertificate=True"));
 
             var app = builder.Build();
 

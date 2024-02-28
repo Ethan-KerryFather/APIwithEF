@@ -9,6 +9,11 @@ namespace WebApiwithEf.Context
         public DbSet<Person> Persons { get; set; }
         public DbSet<Account> Accounts { get; set; }
 
+        public BankContext(DbContextOptions<BankContext> options) :base(options)
+        {
+    
+        }
+
         #region Required
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
