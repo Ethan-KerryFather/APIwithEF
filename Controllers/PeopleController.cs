@@ -39,14 +39,28 @@ namespace WebApiwithEf.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Person>> GetPerson(int id)
         {
-            var person = await _context.Persons.FindAsync(id);
+            //var person = await _context.Persons.FindAsync(id);
 
-            if (person == null)
+            //if (person == null)
+            //{
+            //    return NotFound();
+            //}
+
+            var linqPerson = from element in _context.Persons
+                             where element.Id == id
+                             select element;
+
+            var person = await linqPerson.ToListAsync();
+
+            if(person.Count == 0)
             {
                 return NotFound();
             }
+            else
+            {
+                return Ok(person);
+            }
 
-            return person;
         }
 
         // PUT: api/People/5
